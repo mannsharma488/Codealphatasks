@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>URL Shortener</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI',sans-serif;
+}
+
+body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(
+        135deg,
+        #0f172a,
+        #1e293b,
+        #2563eb
+    );
+    overflow:hidden;
+}
+
+/* Floating circles */
+
+.circle{
+    position:absolute;
+    border-radius:50%;
+    background:rgba(255,255,255,0.08);
+    animation:float 15s infinite linear;
+}
+
+.circle:nth-child(1){
+    width:150px;
+    height:150px;
+    left:10%;
+    top:20%;
+}
+
+.circle:nth-child(2){
+    width:220px;
+    height:220px;
+    right:10%;
+    top:15%;
+}
+
+.circle:nth-child(3){
+    width:180px;
+    height:180px;
+    bottom:10%;
+    left:20%;
+}
+
+.circle:nth-child(4){
+    width:120px;
+    height:120px;
+    bottom:15%;
+    right:20%;
+}
+
+@keyframes float{
+    0%{
+        transform:translateY(0px);
+    }
+    50%{
+        transform:translateY(-30px);
+    }
+    100%{
+        transform:translateY(0px);
+    }
+}
+
+/* Glass Card */
+
+.container{
+
+    width:420px;
+
+    background:rgba(255,255,255,0.1);
+
+    backdrop-filter:blur(20px);
+
+    border:1px solid rgba(255,255,255,0.2);
+
+    border-radius:20px;
+
+    padding:30px;
+
+    color:white;
+
+    text-align:center;
+
+    box-shadow:
+    0 8px 32px rgba(0,0,0,0.3);
+
+    animation:popup 0.8s ease;
+}
+
+@keyframes popup{
+    from{
+        opacity:0;
+        transform:scale(0.8);
+    }
+    to{
+        opacity:1;
+        transform:scale(1);
+    }
+}
+
+h1{
+    margin-bottom:20px;
+    font-size:28px;
+}
+
+.subtitle{
+    opacity:0.8;
+    margin-bottom:25px;
+}
+
+input{
+    width:100%;
+    padding:14px;
+    margin:10px 0;
+
+    border:none;
+
+    border-radius:10px;
+
+    outline:none;
+
+    font-size:15px;
+}
+
+button{
+
+    width:100%;
+
+    padding:14px;
+
+    margin-top:10px;
+
+    border:none;
+
+    border-radius:10px;
+
+    font-size:16px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    background:#3b82f6;
+
+    color:white;
+
+    transition:0.3s;
+}
+
+button:hover{
+
+    transform:translateY(-2px);
+
+    box-shadow:
+    0 0 20px #3b82f6;
+}
+
+.copy-btn{
+    background:#22c55e;
+}
+
+.copy-btn:hover{
+    box-shadow:
+    0 0 20px #22c55e;
+}
+
+#loading{
+    display:none;
+    margin-top:20px;
+}
+
+.loader{
+    width:35px;
+    height:35px;
+    border:4px solid rgba(255,255,255,0.2);
+    border-top:4px solid white;
+    border-radius:50%;
+    animation:spin 1s linear infinite;
+    margin:auto;
+}
+
+@keyframes spin{
+    100%{
+        transform:rotate(360deg);
+    }
+}
+
+#result{
+    margin-top:20px;
+    animation:fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn{
+    from{
+        opacity:0;
+        transform:translateY(10px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+a{
+    color:#93c5fd;
+    word-break:break-all;
+}
+
+.success{
+    color:#4ade80;
+    margin-bottom:10px;
+}
+
+.error{
+    color:#f87171;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="circle"></div>
+<div class="circle"></div>
+<div class="circle"></div>
+<div class="circle"></div>
+
+<div class="container">
+
+<h1>🔗 URL Shortener</h1>
+
+<p class="subtitle">
+Generate beautiful short links instantly
+</p>
+
+<input
+type="text"
+id="url"
+placeholder="Enter Long URL">
+
+<input
+type="text"
+id="custom_code"
+placeholder="Custom Short Code (Optional)">
+
+<button onclick="shortenURL()">
+🚀 Generate Short URL
+</button>
+
+<div id="loading">
+
+<div class="loader"></div>
+
+<p>Generating...</p>
+
+</div>
+
+<div id="result"></div>
+
+</div>
+
+<script>
+
+function copyLink(link){
+
+    navigator.clipboard.writeText(link);
+
+    alert("✅ Link Copied!");
+}
+
+function shortenURL(){
+
+    let url =
+    document.getElementById("url").value;
+
+    let custom_code =
+    document.getElementById("custom_code").value;
+
+    document.getElementById("loading").style.display =
+    "block";
+
+    document.getElementById("result").innerHTML =
+    "";
+
+    fetch(
+        "http://127.0.0.1:5000/shorten",
+        {
+            method:"POST",
+
+            headers:{
+                "Content-Type":"application/json"
+            },
+
+            body:JSON.stringify({
+                url:url,
+                custom_code:custom_code
+            })
+        }
+    )
+
+    .then(response=>response.json())
+
+    .then(data=>{
+
+        document.getElementById("loading").style.display =
+        "none";
+
+        if(data.error){
+
+            document.getElementById("result").innerHTML =
+            `<p class="error">${data.error}</p>`;
+
+            return;
+        }
+
+        let shortLink =
+        data.short_url;
+
+        document.getElementById("result").innerHTML =
+
+        `
+        <p class="success">
+        ✅ URL Generated Successfully
+        </p>
+
+        <a href="${shortLink}" target="_blank">
+        ${shortLink}
+        </a>
+
+        <br><br>
+
+        <button
+        class="copy-btn"
+        onclick="copyLink('${shortLink}')">
+
+        📋 Copy Link
+
+        </button>
+        `;
+    });
+}
+
+</script>
+
+</body>
+</html>
