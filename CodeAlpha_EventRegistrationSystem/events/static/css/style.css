@@ -1,0 +1,92 @@
+body{
+    background:#f4f7fc;
+    font-family:'Poppins',sans-serif;
+}
+
+/* Navbar */
+
+.navbar{
+    transition:.4s;
+}
+
+.nav-link{
+    transition:.3s;
+}
+
+.nav-link:hover{
+    color:#ffd43b !important;
+    transform:translateY(-2px);
+}
+
+/* Hero */
+
+.hero{
+    padding:90px 20px;
+    text-align:center;
+    background:linear-gradient(135deg,#0d6efd,#6610f2);
+    color:white;
+    border-radius:25px;
+    box-shadow:0 15px 40px rgba(0,0,0,.15);
+}
+
+.hero h1{
+    font-size:55px;
+    font-weight:700;
+}
+
+.hero p{
+    font-size:20px;
+}
+
+/* Cards */
+
+.card{
+    border:none;
+    border-radius:20px;
+    transition:.35s;
+    overflow:hidden;
+    box-shadow:0 8px 25px rgba(0,0,0,.08);
+}
+
+.card:hover{
+    transform:translateY(-10px);
+    box-shadow:0 18px 35px rgba(0,0,0,.18);
+}
+
+/* Buttons */
+
+.btn{
+    border-radius:40px;
+    padding:10px 30px;
+    transition:.3s;
+}
+
+.btn:hover{
+    transform:scale(1.05);
+}
+
+/* Table */
+
+table{
+    background:white;
+    border-radius:15px;
+    overflow:hidden;
+}
+
+/* Form */
+
+input,
+textarea{
+    border-radius:12px !important;
+}
+
+input:focus,
+textarea:focus{
+    box-shadow:0 0 10px rgba(13,110,253,.3)!important;
+}
+
+/* Footer */
+
+footer{
+    margin-top:80px;
+}
